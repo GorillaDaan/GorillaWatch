@@ -13,7 +13,7 @@ namespace GorillaWatch
     /* This attribute tells Utilla to look for [ModdedGameJoin] and [ModdedGameLeave] */
     [ModdedGamemode]
     [BepInDependency("org.legoandmars.gorillatag.utilla", "1.5.0")]
-    [BepInPlugin("com.GorillaDaan.gorillatag.GorillaWatch", "GorillaWatch", "1.0.0")]
+    [BepInPlugin("com.GorillaDaan.gorillatag.GorillaWatch", "GorillaWatch", "1.0.1")]
     public class Mod : BaseUnityPlugin
     {
         bool inRoom;
@@ -193,6 +193,11 @@ namespace GorillaWatch
                         }
                     }
                 }
+		if (!ToggleMod1)
+  		{
+			GameObject.Destroy(rightplat)
+   			GameObject.Destroy(leftplat)
+    		}
                 if (ToggleMod6)
                 {
                     if (ControllerInputPoller.instance.leftControllerGripFloat > .5)
@@ -228,6 +233,11 @@ namespace GorillaWatch
                 {
                         GorillaLocomotion.Player.Instance.scale = .5f;
                 }
+            }
+	    if (!InRoom)
+  	    {
+			GameObject.Destroy(rightplat)
+   			GameObject.Destroy(leftplat)
             }
         }
 
