@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using GorillaWatch.Patches;
 using System;
 using UnityEngine;
@@ -13,7 +13,7 @@ namespace GorillaWatch
     /* This attribute tells Utilla to look for [ModdedGameJoin] and [ModdedGameLeave] */
     [ModdedGamemode]
     [BepInDependency("org.legoandmars.gorillatag.utilla", "1.5.0")]
-    [BepInPlugin("com.GorillaDaan.gorillatag.GorillaWatch", "GorillaWatch", "1.0.1")]
+    [BepInPlugin("com.GorillaDaan.gorillatag.GorillaWatch", "GorillaWatch", "1.0.0")]
     public class Mod : BaseUnityPlugin
     {
         bool inRoom;
@@ -21,6 +21,14 @@ namespace GorillaWatch
         public static int counter;
 
         public static float PageCoolDown;
+
+        public static int layer = 29, layerMask = 1 << layer;
+
+        private LayerMask baseMask;
+
+        float bounce;
+
+        PhysicMaterialCombine PMCombine;
 
         public static bool ToggleMod1;
 
@@ -33,6 +41,14 @@ namespace GorillaWatch
         public static bool ToggleMod5;
         
         public static bool ToggleMod6;
+
+        public static bool ToggleMod7;
+
+        public static bool ToggleMod8;
+
+        public static bool ToggleMod9;
+
+        public static bool ToggleMod10;
 
         public static GameObject leftplat = null;
 
@@ -77,9 +93,9 @@ namespace GorillaWatch
                 }
                 if (counter < 0)
                 {
-                    counter = 6;
+                    counter = 9;
                 }
-                if (counter > 6)
+                if (counter > 9)
                 {
                     counter = 0;
                 }
@@ -89,7 +105,7 @@ namespace GorillaWatch
                 }
                 if (counter == 1)
                 {
-                    GorillaTagger.Instance.offlineVRRig.huntComputer.GetComponent<GorillaHuntComputer>().text.text = "PlatformGuy- " + ToggleMod1.ToString();
+                    GorillaTagger.Instance.offlineVRRig.huntComputer.GetComponent<GorillaHuntComputer>().text.text = "PlatformGuy--" + ToggleMod1.ToString();
                     if (ControllerInputPoller.instance.rightControllerPrimaryButton && Time.time > PageCoolDown + .5)
                     {
                         PageCoolDown = Time.time;
@@ -147,6 +163,36 @@ namespace GorillaWatch
                         GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(69, true, 1f);
                     }
                 }
+                if (counter == 7)
+                {
+                    GorillaTagger.Instance.offlineVRRig.huntComputer.GetComponent<GorillaHuntComputer>().text.text = "Fixing";
+                    if (ControllerInputPoller.instance.rightControllerPrimaryButton && Time.time > PageCoolDown + .5)
+                    {
+                        PageCoolDown = Time.time;
+                        ToggleMod7 = !ToggleMod7;
+                        GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(69, true, 1f);
+                    }
+                }
+                if (counter == 8)
+                {
+                    GorillaTagger.Instance.offlineVRRig.huntComputer.GetComponent<GorillaHuntComputer>().text.text = "NoClip-- " + ToggleMod8.ToString();
+                    if (ControllerInputPoller.instance.rightControllerPrimaryButton && Time.time > PageCoolDown + .5)
+                    {
+                        PageCoolDown = Time.time;
+                        ToggleMod8 = !ToggleMod8;
+                        GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(69, true, 1f);
+                    }
+                }
+                if (counter == 9)
+                {
+                    GorillaTagger.Instance.offlineVRRig.huntComputer.GetComponent<GorillaHuntComputer>().text.text = "MonkeBoing-- " + ToggleMod9.ToString();
+                    if (ControllerInputPoller.instance.rightControllerPrimaryButton && Time.time > PageCoolDown + .5)
+                    {
+                        PageCoolDown = Time.time;
+                        ToggleMod9 = !ToggleMod9;
+                        GorillaTagger.Instance.offlineVRRig.PlayHandTapLocal(69, true, 1f);
+                    }
+                }
                 if (ToggleMod1)
                 {
                     Vector3 leftOffset = new Vector3(0f, -0.06f, 0f);
@@ -193,11 +239,6 @@ namespace GorillaWatch
                         }
                     }
                 }
-		if (!ToggleMod1)
-  		{
-			GameObject.Destroy(rightplat)
-   			GameObject.Destroy(leftplat)
-    		}
                 if (ToggleMod6)
                 {
                     if (ControllerInputPoller.instance.leftControllerGripFloat > .5)
@@ -220,10 +261,7 @@ namespace GorillaWatch
                 }
                 if (ToggleMod5)
                 {
-                    if (ControllerInputPoller.instance.rightControllerSecondaryButton)
-                    {
-                        GorillaLocomotion.Player.Instance.GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Acceleration);
-                    }
+                    GorillaLocomotion.Player.Instance.GetComponent<Rigidbody>().AddForce(Vector3.up * 10f, ForceMode.Acceleration);
                 }
                 if (ToggleMod3)
                 {
@@ -233,34 +271,68 @@ namespace GorillaWatch
                 {
                         GorillaLocomotion.Player.Instance.scale = .5f;
                 }
+                if (ToggleMod7)
+                {
+                    //Fixin
+                }
+                if (ToggleMod8)
+                {
+                    MeshCollider[] array = Resources.FindObjectsOfTypeAll<MeshCollider>();
+                    foreach (MeshCollider meshCollider in array)
+                    {
+                        meshCollider.enabled = false;
+                    }
+                }
+                else
+                {
+                    MeshCollider[] array3 = Resources.FindObjectsOfTypeAll<MeshCollider>();
+                    foreach (MeshCollider meshCollider2 in array3)
+                    {
+                        meshCollider2.enabled = true;
+                    }
+                }
+                /*if (ToggleMod8)
+                {
+                    baseMask = GorillaLocomotion.Player.Instance.locomotionEnabledLayers;
+                    GorillaLocomotion.Player.Instance.locomotionEnabledLayers = layerMask;
+                    GorillaLocomotion.Player.Instance.bodyCollider.isTrigger = true;
+                    GorillaLocomotion.Player.Instance.headCollider.isTrigger = true;
+                }
+                else
+                {
+                    /*GorillaLocomotion.Player.Instance.locomotionEnabledLayers = baseMask;
+                    GorillaLocomotion.Player.Instance.bodyCollider.isTrigger = false;
+                    GorillaLocomotion.Player.Instance.headCollider.isTrigger = false;
+                }*/
+                if (ToggleMod9)
+                {
+                    bounce = GorillaLocomotion.Player.Instance.bodyCollider.material.bounciness;
+                    PMCombine = GorillaLocomotion.Player.Instance.bodyCollider.material.bounceCombine;
+                    GorillaLocomotion.Player.Instance.bodyCollider.material.bounceCombine = PhysicMaterialCombine.Maximum;
+                    GorillaLocomotion.Player.Instance.bodyCollider.material.bounciness = 1.0f;
+                }
+                if (!ToggleMod9)
+                {
+                    bounce = GorillaLocomotion.Player.Instance.bodyCollider.material.bounciness;
+                    PMCombine = GorillaLocomotion.Player.Instance.bodyCollider.material.bounceCombine;
+                    GorillaLocomotion.Player.Instance.bodyCollider.material.bounceCombine = PhysicMaterialCombine.Maximum;
+                    GorillaLocomotion.Player.Instance.bodyCollider.material.bounciness = 0f;
+                }
+                if (ToggleMod10)
+                {
+                    //Nuthin yet
+                }
             }
-	    if (!InRoom)
-  	    {
-			GameObject.Destroy(rightplat)
-   			GameObject.Destroy(leftplat)
-            }
         }
 
-        /* This attribute tells Utilla to call this method when a modded room is joined */
-        [ModdedGamemodeJoin]
-        public void OnJoin(string gamemode)
+        void OnEnable()
         {
-            //Activate your mod here
-            //ModName();
-
-            inRoom = true;
-        }
-
-        /* This attribute tells Utilla to call this method when a modded room is left */
-        [ModdedGamemodeLeave]
-        public void OnLeave(string gamemode)
-        {
-            //Deactivate your mod here
-            //!ModName();
-
-            inRoom = false;
-        }
-
+            Update();
+        }   
         
+        void OnDisable()
+        {
+            GorillaTagger.Instance.offlineVRRig.EnableHuntWatch(false);
+        }   
     }
 }
